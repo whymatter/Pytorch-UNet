@@ -71,6 +71,9 @@ class CachedDatset(Dataset):
             self.img_cache[i,:,:] = img
             self.mask_cache[i,:,:] = mask
         
+        print(self.img_cache[0])
+        print(self.mask_cache[0])
+        
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
         logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes')
 
