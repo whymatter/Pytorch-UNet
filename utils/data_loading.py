@@ -56,12 +56,14 @@ class CachedDatset(Dataset):
 
             img = load_image(img_file[0])
             mask = load_image(mask_file[0])
+            print(np.unique(mask))
 
             assert img.size == mask.size, \
                 f'Image and mask {name} should be the same size, but are {img.size} and {mask.size}'
 
             img = self.preprocess(base.mask_values, img, scale, is_mask=False)
             mask = self.preprocess(base.mask_values, mask, scale, is_mask=True)
+            print(np.unique(mask))
 
             if self.img_cache is None:
                 # initialize cache
