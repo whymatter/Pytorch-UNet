@@ -78,6 +78,7 @@ class CachedDatset(Dataset):
         np.save('/root/mask_cache.npy', self.mask_cache)
 
         logging.info('Saved caches to *.npy')
+        exit()
 
 
     @staticmethod
