@@ -48,8 +48,8 @@ class CachedDatset(Dataset):
         logging.info('Populating cache')
 
         for i, name in tqdm(enumerate(base.ids), total=num_images, desc='Loading images'):
-            mask_file = mask_dir + name + '.bmp'
-            img_file = images_dir + name + '.png'
+            mask_file = mask_dir / (name + '.bmp')
+            img_file = images_dir / (name + '.png')
 
             assert len(img_file) == 1, f'Either no image or multiple images found for the ID {name}: {img_file}'
             assert len(mask_file) == 1, f'Either no mask or multiple masks found for the ID {name}: {mask_file}'
