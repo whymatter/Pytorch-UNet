@@ -76,6 +76,8 @@ class CachedDatset(Dataset):
         print(self.img_cache[0])
         print(self.mask_cache[0])
         print(np.unique(self.mask_cache[0]))
+
+        exit()
         
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
         logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes')
