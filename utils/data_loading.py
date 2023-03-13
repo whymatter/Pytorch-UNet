@@ -173,12 +173,12 @@ class BasicDataset(Dataset):
 
     def __getitem__(self, idx):
         name = self.ids[idx]
-        
+
         mask_file = self.mask_dir / (name + '.bmp')
         img_file = self.images_dir / (name + '.png')
 
-        mask = load_image(mask_file[0])
-        img = load_image(img_file[0])
+        mask = load_image(mask_file)
+        img = load_image(img_file)
 
         assert img.size == mask.size, \
             f'Image and mask {name} should be the same size, but are {img.size} and {mask.size}'
