@@ -73,8 +73,6 @@ class CachedDatset(Dataset):
             self.img_cache[i,:,:] = img
             self.mask_cache[i,:,:] = mask
         
-        print(self.img_cache[0])
-        print(self.mask_cache[0])
         print(np.unique(self.mask_cache[0]))
 
         exit()
