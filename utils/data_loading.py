@@ -35,6 +35,84 @@ def unique_mask_values(idx, mask_dir, mask_suffix):
         raise ValueError(f'Loaded masks should have 2 or 3 dimensions, found {mask.ndim}')
 
 
+class CachedDatset(Dataset):
+    def __init__(self, images_dir: str, mask_dir: str, scale: float = 1.0, mask_suffix: str = '', num_images: int = None):
+        base = BasicDataset(images_dir, mask_dir, scale, mask_suffix, num_images)
+        num_images = len(base)
+
+        self.img_cache = None
+        self.mask_cache = None
+
+        logging.info('Populating cache')
+
+        for i, name in tqdm(enumerate(base.ids), total=num_images, desc='Loading images'):
+            mask_file = list(mask_dir.glob(name + mask_suffix + '.*'))
+            img_file = list(images_dir.glob(name + '.*'))
+
+            assert len(img_file) == 1, f'Either no image or multiple images found for the ID {name}: {img_file}'
+            assert len(mask_file) == 1, f'Either no mask or multiple masks found for the ID {name}: {mask_file}'
+
+            img = load_image(img_file[0])
+            mask = load_image(mask_file[0])
+
+            assert img.size == mask.size, \
+                f'Image and mask {name} should be the same size, but are {img.size} and {mask.size}'
+
+            img = self.preprocess(base.mask_values, img, scale, is_mask=False)
+            mask = self.preprocess(base.mask_values, mask, scale, is_mask=True)
+
+            if self.img_cache is None:
+                # initialize cache
+                self.img_cache = np.zeros((num_images, *img.shape), dtype=np.int8)
+                self.mask_cache = np.zeros((num_images, *mask.shape), dtype=np.int8)
+
+            self.img_cache[i,:,:] = img
+            self.mask_cache[i,:,:] = img
+        
+        logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
+        logging.info(f'Loaded masks cache, size: {self.img_cache.nbytes}bytes')
+
+
+    @staticmethod
+    def preprocess(mask_values, pil_img, scale, is_mask):
+        w, h = pil_img.size
+        newW, newH = int(scale * w), int(scale * h)
+        assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
+        pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
+        img = np.asarray(pil_img, dtype=np.int8)
+
+        if is_mask:
+            mask = np.zeros((newH, newW), dtype=np.int8)
+            for i, v in enumerate(mask_values):
+                if img.ndim == 2:
+                    mask[img == v] = i
+                else:
+                    mask[(img == v).all(-1)] = i
+
+            return mask
+
+        else:
+            if img.ndim == 2:
+                img = img[np.newaxis, ...]
+            else:
+                img = img.transpose((2, 0, 1))
+
+            return img
+
+
+    def __len__(self):
+        return len(self.base)
+
+    def __getitem__(self, idx):
+        assert idx < len(self.cache), f'Requested index {idx} is out of range'
+        img, mask = self.cache[idx]
+        img = img / 255.0
+        return {
+            'image': torch.as_tensor(img.copy()).float().contiguous(),
+            'mask': torch.as_tensor(mask.copy()).long().contiguous()
+        }
+
+
 class BasicDataset(Dataset):
     def __init__(self, images_dir: str, mask_dir: str, scale: float = 1.0, mask_suffix: str = '', num_images: int = None):
         self.images_dir = Path(images_dir)

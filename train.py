@@ -41,7 +41,7 @@ def train_model(
         num_images=None
 ):
     # 1. Create dataset
-    dataset = BasicDataset(dir_img, dir_mask, img_scale, num_images=num_images)
+    dataset = CachedDatset(dir_img, dir_mask, img_scale, num_images=num_images)
 
     # 2. Split into train / validation partitions
     n_val = int(len(dataset) * val_percent)
@@ -97,7 +97,7 @@ def train_model(
                 images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
                 true_masks = true_masks.to(device=device, dtype=torch.long)
                 elapsed = timeit.default_timer() - start_time
-                print(f'! Loading took {elapsed}s')
+                # print(f'! Loading took {elapsed}s')
 
                 with torch.autocast(device.type if device.type != 'mps' else 'cpu', enabled=amp):
                     masks_pred = model(images)
