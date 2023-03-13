@@ -88,12 +88,12 @@ class CachedDatset(Dataset):
         newW, newH = int(scale * w), int(scale * h)
         assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
         pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
-        img = np.asarray(pil_img, dtype=np.int8)
+        img = np.asarray(pil_img)
         print(np.unique(pil_img))
         print(np.unique(img))
 
         if is_mask:
-            mask = np.zeros((newH, newW), dtype=np.int8)
+            mask = np.zeros((newH, newW))
             for i, v in enumerate(mask_values):
                 if img.ndim == 2:
                     mask[img == v] = i
