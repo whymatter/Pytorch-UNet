@@ -77,10 +77,10 @@ class CachedDatset(Dataset):
 
     @staticmethod
     def preprocess(mask_values, pil_img, scale, is_mask):
-        w, h = pil_img.size
-        newW, newH = int(scale * w), int(scale * h)
-        assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
-        pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
+        #w, h = pil_img.size
+        #newW, newH = int(scale * w), int(scale * h)
+        #assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
+        #pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
         img = np.asarray(pil_img, dtype=np.uint8)
 
         if is_mask:
@@ -110,8 +110,8 @@ class CachedDatset(Dataset):
         img, mask = self.img_cache[idx,:,:], self.mask_cache[idx,:,:]
         img = img / 255.0
         return {
-            'image': torch.as_tensor(img.copy()).float().contiguous(),
-            'mask': torch.as_tensor(mask.copy()).long().contiguous()
+            'image': torch.as_tensor(img.copy()).to(torch.float16).contiguous(),
+            'mask': torch.as_tensor(mask.copy()).to(torch.uint8).contiguous()
         }
 
 

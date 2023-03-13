@@ -94,8 +94,8 @@ def train_model(
                     'the images are loaded correctly.'
 
                 start_time = timeit.default_timer()
-                images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
-                true_masks = true_masks.to(device=device, dtype=torch.long)
+                images = images.to(device=device, dtype=torch.float16, memory_format=torch.channels_last)
+                true_masks = true_masks.to(device=device, dtype=torch.uint8)
                 elapsed = timeit.default_timer() - start_time
                 # print(f'! Loading took {elapsed}s')
 
@@ -103,12 +103,12 @@ def train_model(
                     masks_pred = model(images)
                     if model.n_classes == 1:
                         #loss = criterion(masks_pred.squeeze(1), true_masks.float())
-                        loss = dice_loss(torch.sigmoid(masks_pred.squeeze(1)), true_masks.float(), multiclass=False)
+                        loss = dice_loss(torch.sigmoid(masks_pred.squeeze(1)), true_masks.to(torch.float16), multiclass=False)
                     else:
                         #loss = criterion(masks_pred, true_masks)
                         loss = dice_loss(
                             F.softmax(masks_pred, dim=1).float(),
-                            F.one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).float(),
+                            F.one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).to(torch.float16),
                             multiclass=True
                         )
 
