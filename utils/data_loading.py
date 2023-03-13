@@ -74,6 +74,11 @@ class CachedDatset(Dataset):
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes, {self.img_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
         logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes, {self.mask_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
 
+        np.save('/root/img_cache.npy', self.img_cache)
+        np.save('/root/mask_cache.npy', self.mask_cache)
+
+        logging.info('Saved caches to *.npy')
+
 
     @staticmethod
     def preprocess(mask_values, pil_img, scale, is_mask):
