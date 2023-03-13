@@ -84,7 +84,7 @@ class CachedDatset(Dataset):
         img = np.asarray(pil_img, dtype=np.uint8)
 
         if is_mask:
-            mask = np.zeros((newH, newW), dtype=np.uint8)
+            mask = np.zeros(pil_img.size, dtype=np.uint8)
             for i, v in enumerate(mask_values):
                 if img.ndim == 2:
                     mask[img == v] = i
