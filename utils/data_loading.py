@@ -48,8 +48,8 @@ class CachedDatset(Dataset):
         logging.info('Populating cache')
 
         for i, name in tqdm(enumerate(base.ids), total=num_images, desc='Loading images'):
-            mask_file = list(mask_dir.glob(name + mask_suffix + '.*'))
-            img_file = list(images_dir.glob(name + '.*'))
+            mask_file = mask_dir + name + '.bmp'
+            img_file = images_dir + name + '.png'
 
             assert len(img_file) == 1, f'Either no image or multiple images found for the ID {name}: {img_file}'
             assert len(mask_file) == 1, f'Either no mask or multiple masks found for the ID {name}: {mask_file}'
@@ -74,19 +74,10 @@ class CachedDatset(Dataset):
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes, {self.img_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
         logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes, {self.mask_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
 
-        np.save('/root/img_cache.npy', self.img_cache)
-        np.save('/root/mask_cache.npy', self.mask_cache)
-
-        logging.info('Saved caches to *.npy')
-        exit()
-
 
     @staticmethod
     def preprocess(mask_values, pil_img, scale, is_mask):
         w, h = pil_img.size
-        #newW, newH = int(scale * w), int(scale * h)
-        #assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
-        #pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
         img = np.asarray(pil_img, dtype=np.uint8)
 
         if is_mask:
