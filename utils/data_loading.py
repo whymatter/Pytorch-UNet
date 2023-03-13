@@ -188,7 +188,7 @@ class BasicDataset(Dataset):
         mask = self.preprocess(self.mask_values, mask, self.scale, is_mask=True)
 
         return {
-            'image': torch.as_tensor(img.copy()).float().contiguous(),
+            'image': torch.as_tensor(img.copy()).to(torch.float16).contiguous(),
             'mask': torch.as_tensor(mask.copy()).long().contiguous()
         }
 
