@@ -83,11 +83,14 @@ class CachedDatset(Dataset):
 
     @staticmethod
     def preprocess(mask_values, pil_img, scale, is_mask):
+        print(mask_values)
         w, h = pil_img.size
         newW, newH = int(scale * w), int(scale * h)
         assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
         pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
         img = np.asarray(pil_img, dtype=np.int8)
+        print(np.unique(mask))
+        print(np.unique(img))
 
         if is_mask:
             mask = np.zeros((newH, newW), dtype=np.int8)
