@@ -70,7 +70,7 @@ class CachedDatset(Dataset):
             self.mask_cache[i,:,:] = img
         
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
-        logging.info(f'Loaded masks cache, size: {self.img_cache.nbytes}bytes')
+        logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes')
 
 
     @staticmethod
@@ -101,7 +101,7 @@ class CachedDatset(Dataset):
 
 
     def __len__(self):
-        return len(self.base)
+        return self.img_cache.shape[0]
 
     def __getitem__(self, idx):
         assert idx < len(self.cache), f'Requested index {idx} is out of range'
