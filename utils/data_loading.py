@@ -104,8 +104,8 @@ class CachedDatset(Dataset):
         return self.img_cache.shape[0]
 
     def __getitem__(self, idx):
-        assert idx < len(self.cache), f'Requested index {idx} is out of range'
-        img, mask = self.cache[idx]
+        assert idx < len(self), f'Requested index {idx} is out of range'
+        img, mask = self.img_cache[idx,:,:], self.mask_cache[idx,:,:]
         img = img / 255.0
         return {
             'image': torch.as_tensor(img.copy()).float().contiguous(),
