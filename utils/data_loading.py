@@ -56,14 +56,12 @@ class CachedDatset(Dataset):
 
             img = load_image(img_file[0])
             mask = load_image(mask_file[0])
-            print(np.unique(mask))
 
             assert img.size == mask.size, \
                 f'Image and mask {name} should be the same size, but are {img.size} and {mask.size}'
 
             img = self.preprocess(base.mask_values, img, scale, is_mask=False)
             mask = self.preprocess(base.mask_values, mask, scale, is_mask=True)
-            print(np.unique(mask))
 
             if self.img_cache is None:
                 # initialize cache
@@ -72,25 +70,18 @@ class CachedDatset(Dataset):
 
             self.img_cache[i,:,:] = img
             self.mask_cache[i,:,:] = mask
-        
-        print(np.unique(self.mask_cache[0]))
 
-        exit()
-        
-        logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
-        logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes')
+        logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes, {self.img_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
+        logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes, {self.mask_cache.nbytes // 1024  // 1024  // 1024}Gbytes')
 
 
     @staticmethod
     def preprocess(mask_values, pil_img, scale, is_mask):
-        print(mask_values)
         w, h = pil_img.size
         newW, newH = int(scale * w), int(scale * h)
         assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
         pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
         img = np.asarray(pil_img, dtype=np.uint8)
-        print(np.unique(pil_img))
-        print(np.unique(img))
 
         if is_mask:
             mask = np.zeros((newH, newW), dtype=np.uint8)
