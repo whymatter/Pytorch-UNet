@@ -101,7 +101,7 @@ def train_model(
                     masks_pred = model(images)
                     if model.n_classes == 1:
                         #loss = criterion(masks_pred.squeeze(1), true_masks.float())
-                        loss = dice_loss(F.sigmoid(masks_pred.squeeze(1)), true_masks.float(), multiclass=False)
+                        loss = dice_loss(torch.sigmoid(masks_pred.squeeze(1)), true_masks.float(), multiclass=False)
                     else:
                         #loss = criterion(masks_pred, true_masks)
                         loss = dice_loss(
