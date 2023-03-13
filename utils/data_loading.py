@@ -67,8 +67,8 @@ class CachedDatset(Dataset):
 
             if self.img_cache is None:
                 # initialize cache
-                self.img_cache = np.zeros((num_images, *img.shape), dtype=np.int8)
-                self.mask_cache = np.zeros((num_images, *mask.shape), dtype=np.int8)
+                self.img_cache = np.zeros((num_images, *img.shape), dtype=np.uint8)
+                self.mask_cache = np.zeros((num_images, *mask.shape), dtype=np.uint8)
 
             self.img_cache[i,:,:] = img
             self.mask_cache[i,:,:] = mask
@@ -88,12 +88,12 @@ class CachedDatset(Dataset):
         newW, newH = int(scale * w), int(scale * h)
         assert newW > 0 and newH > 0, 'Scale is too small, resized images would have no pixel'
         pil_img = pil_img.resize((newW, newH), resample=Image.NEAREST if is_mask else Image.BICUBIC)
-        img = np.asarray(pil_img)
+        img = np.asarray(pil_img, dtype=np.uint8)
         print(np.unique(pil_img))
         print(np.unique(img))
 
         if is_mask:
-            mask = np.zeros((newH, newW))
+            mask = np.zeros((newH, newW), dtype=np.uint8)
             for i, v in enumerate(mask_values):
                 if img.ndim == 2:
                     mask[img == v] = i
