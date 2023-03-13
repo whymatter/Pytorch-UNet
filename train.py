@@ -40,7 +40,7 @@ def train_model(
         num_images=None
 ):
     # 1. Create dataset
-    dataset = BasicDataset(dir_img, dir_mask, img_scale, num_images)
+    dataset = BasicDataset(dir_img, dir_mask, img_scale, num_images=num_images)
 
     # 2. Split into train / validation partitions
     n_val = int(len(dataset) * val_percent)
