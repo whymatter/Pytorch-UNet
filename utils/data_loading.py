@@ -40,6 +40,8 @@ class CachedDatset(Dataset):
         base = BasicDataset(images_dir, mask_dir, scale, mask_suffix, num_images)
         num_images = len(base)
 
+        self.mask_values = base.mask_values
+
         self.img_cache = None
         self.mask_cache = None
 
@@ -67,7 +69,7 @@ class CachedDatset(Dataset):
                 self.mask_cache = np.zeros((num_images, *mask.shape), dtype=np.int8)
 
             self.img_cache[i,:,:] = img
-            self.mask_cache[i,:,:] = img
+            self.mask_cache[i,:,:] = mask
         
         logging.info(f'Loaded image cache, size: {self.img_cache.nbytes}bytes')
         logging.info(f'Loaded masks cache, size: {self.mask_cache.nbytes}bytes')
