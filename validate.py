@@ -37,7 +37,7 @@ def train_model(
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
 
     # (Initialize logging)
-    experiment = wandb.init(id="am3jqymn", resume="allow")
+    experiment = wandb.init(project='U-Net', id="am3jqymn", resume="allow")
 
     # 5. Begin training
     checkpoints = os.listdir('./checkpoints')
@@ -54,10 +54,10 @@ def train_model(
 
         # Log validation
         logging.info('Validation Dice score: {}'.format(val_score))
-        # experiment.log({
-        #     'validation Dice': val_score,
-        #     'epoch': epoch
-        # })
+        experiment.log({
+            'validation Dice': val_score,
+            'epoch': epoch
+        })
 
 
 def get_args():
