@@ -157,7 +157,8 @@ def train_model(
                                 'epoch': epoch,
                                 **histograms
                             })
-                        except:
+                        except Exception as err:
+                            print(err)
                             pass
 
         if save_checkpoint:
