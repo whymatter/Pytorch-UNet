@@ -104,7 +104,7 @@ class CachedDatset(Dataset):
         img, mask = self.img_cache[idx,:,:], self.mask_cache[idx,:,:]
         img = img / 255.0
         return {
-            'image': torch.as_tensor(img.copy()).to(torch.float16).contiguous(),
+            'image': torch.as_tensor(img.copy()).to(torch.float).contiguous(),
             'mask': torch.as_tensor(mask.copy()).to(torch.uint8).contiguous()
         }
 
@@ -185,7 +185,7 @@ class BasicDataset(Dataset):
         mask = self.preprocess(self.mask_values, mask, self.scale, is_mask=True)
 
         return {
-            'image': torch.as_tensor(img.copy()).to(torch.float16).contiguous(),
+            'image': torch.as_tensor(img.copy()).to(torch.float).contiguous(),
             'mask': torch.as_tensor(mask.copy()).long().contiguous()
         }
 
