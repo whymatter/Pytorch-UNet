@@ -17,7 +17,7 @@ def evaluate(net, dataloader, device, amp):
             image, mask_true = batch['image'], batch['mask']
 
             # move images and labels to correct device and type
-            image = image.to(device=device, dtype=torch.float, memory_format=torch.channels_last)
+            image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
             mask_true = mask_true.to(device=device, dtype=torch.uint8)
 
             # predict the mask
